@@ -39,7 +39,7 @@ randall-assignment.$(TAREXT): $(assignment-files)
 	$(TAR) $(TARFLAGS) -cf $@ $(assignment-files)
 
 submission-tarball: randall-submission.$(TAREXT)
-submission-files = $(assignment-files) \
+submission-files = $(FILES) \
   notes.txt # More files should be listed here, as needed.
 randall-submission.$(TAREXT): $(submission-files)
 	$(TAR) $(TARFLAGS) -cf $@ $(submission-files)
@@ -49,5 +49,28 @@ repository-tarball:
 
 .PHONY: default clean assignment submission-tarball repository-tarball
 
-clean:
-	rm -f *.o *.$(TAREXT) randall
+# Unit tests
+# ========== TESTS 1-3 check N-BYTES ==========
+check: randall
+	@echo "=========== TEST 1 ==========="
+	@./randall 10 | wc -c | (grep -q "^10$$" && echo "PASSED") || (echo "FAILED" && false)
+	@echo "=========== TEST 2 ==========="
+	@./randall 1 | wc -c | (grep -q "^1$$" && echo "PASSED") || (echo "FAILED" && false)
+	@echo "=========== TEST 3 ==========="
+	@./randall 0 | wc -c | (grep -q "^0$$" && echo "PASSED") || (echo "FAILED" && false)
+
+# Automatically formats all of your C code.
+format:
+	clang-format -i *.c *.h
+
+# Helps find memory leaks. For an explanation on each flag
+valgrind: randall
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose ./randall 100
+
+# Runs the Undefined Behavior (UBSAN) and Address (ASAN) sanitizers. GCC doesn’t support these on the SEASNet servers so we recommend using clang instead (a different C compiler).
+sanitizers:
+	clang -g3 -Wall -Wextra -mtune-native -mrdrnd -fsanitize=address \
+		-fsanitize=undefined *.c -o randall
+
+# Make sure to add these rules to .PHONY. These tells make that it should not look for files called each of these recipe targets.
+.PHONY: default clean assignment submission-tarball repository-tarball check format valgrind sanitizers
