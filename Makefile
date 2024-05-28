@@ -28,10 +28,14 @@ TAR = tar
 TARFLAGS = --gzip --transform 's,^,randall/,'
 TAREXT = tgz
 
+# Relevant files
+FILES = $(wildcard *.c) $(wildcard *.h)
+
+
 default: randall
 
-randall: randall.c
-	$(CC) $(CFLAGS) $@.c -o $@
+randall: randall.c $(FILES)
+	$(CC) $(CFLAGS) *.c -o $@
 
 assignment: randall-assignment.$(TAREXT)
 assignment-files = COPYING Makefile randall.c

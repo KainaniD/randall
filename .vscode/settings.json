@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "rand64-sw.h": "c",
+        "rand64-hw.h": "c",
+        "cpuid.h": "c",
+        "stdbool.h": "c",
+        "options.h": "c"
+    }
+}
