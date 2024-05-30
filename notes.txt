@@ -1,0 +1,43 @@
+========== Commit 1 ==========
+
+Added unit checks to the makefile
+
+========== Commit 2 ==========
+
+Changed makefile to work with refactored code
+Refactored code into 8 files
+
+output.c / output.h {
+    bool writebytes(unsigned long long x, int nbytes);
+
+    int handle_output(int nbytes);
+}
+
+options.c / options.h {
+    long long handle_nbytes(int argc, char **argv);
+}
+
+rand64-hw.c / rand64-hw.h {
+    struct cpuid { unsigned eax, ebx, ecx, edx; };
+
+    struct cpuid cpuid(unsigned int leaf, unsigned int subleaf);
+
+    _Bool rdrand_supported(void);
+
+    void hardware_rand64_init(void);
+
+    unsigned long long hardware_rand64(void);
+
+    void hardware_rand64_fini(void);
+}
+
+rand64-sw.c / rand64-sw.h {
+    void software_rand64_init(void);
+
+    unsigned long long software_rand64(void);
+
+    void software_rand64_fini(void);
+}
+
+========== Commit 3 ==========
+

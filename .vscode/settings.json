@@ -4,6 +4,10 @@
         "rand64-hw.h": "c",
         "cpuid.h": "c",
         "stdbool.h": "c",
-        "options.h": "c"
+        "options.h": "c",
+        "output.h": "c",
+        "string.h": "c",
+        "string": "c",
+        "string_view": "c"
     }
 }

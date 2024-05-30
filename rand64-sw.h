@@ -6,7 +6,7 @@
 
 
 /* Initialize the software rand64 implementation.  */
-void software_rand64_init(void);
+void software_rand64_init(char* inputFile);
 
 /* Return a random value, using software operations.  */
 unsigned long long software_rand64(void);

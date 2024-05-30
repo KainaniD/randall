@@ -11,35 +11,61 @@ bool writebytes(unsigned long long x, int nbytes) {
   return true;
 }
 
-int handle_output(int nbytes) {
-      /* Now that we know we have work to do, arrange to use the
+int handle_output(char *input, char *output, int nbytes) {
+  /* Now that we know we have work to do, arrange to use the
      appropriate library.  */
-  void (*initialize)(void);
+  void (*initialize_hardware)(void);
+  void (*initialize_software)(char*);
   unsigned long long (*rand64)(void);
   void (*finalize)(void);
-  if (rdrand_supported()) {
-    initialize = hardware_rand64_init;
-    rand64 = hardware_rand64;
-    finalize = hardware_rand64_fini;
-  } else {
-    initialize = software_rand64_init;
-    rand64 = software_rand64;
-    finalize = software_rand64_fini;
+
+  //Error handling for missing input or output
+  if (input[0] == '\0' || output[0] == '\0'){
+    fprintf(stderr, "Missing input or output\n");
+    return 1;
   }
 
-  initialize();
+  if (strcmp(input, "rdrand") == 0) {
+    // Handles hardware case
+    initialize_hardware = hardware_rand64_init;
+    rand64 = hardware_rand64;
+    finalize = hardware_rand64_fini;
+    initialize_hardware();
+  } else if (strcmp(input, "lrand48_r") == 0) {
+    // Handles lrand48_r case
+    initialize_hardware = hardware_mrand4_init;
+    rand64 = hardware_mrand4;
+    finalize = hardware_mrand4_fini;
+    initialize_hardware();
+  } else {
+    // Handle /F case.
+    if (strncmp(input, "/", 1) != 0) {
+      fprintf(stderr, "Invalid input file\n");
+      return 1;
+    }
+    initialize_software = software_rand64_init;
+    rand64 = software_rand64;
+    finalize = software_rand64_fini;
+    initialize_software(input);
+  }
+
   int wordsize = sizeof rand64();
   int output_errno = 0;
 
-  do {
-    unsigned long long x = rand64();
-    int outbytes = nbytes < wordsize ? nbytes : wordsize;
-    if (!writebytes(x, outbytes)) {
-      output_errno = errno;
-      break;
-    }
-    nbytes -= outbytes;
-  } while (0 < nbytes);
+   if (strcmp(output, "stdio") == 0) {
+      // Default stdio option
+      do {
+      unsigned long long x = rand64();
+      int outbytes = nbytes < wordsize ? nbytes : wordsize;
+      if (!writebytes(x, outbytes)) {
+        output_errno = errno;
+        break;
+      }
+      nbytes -= outbytes;
+      } while (0 < nbytes);
+   } else {
+      // Handle -o N option
+   }
 
   if (fclose(stdout) != 0)
     output_errno = errno;

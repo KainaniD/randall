@@ -25,16 +25,38 @@
 #include "options.h"
 #include "output.h"
 
+
 /* Main program, which outputs N bytes of random data.  */
 int main(int argc, char **argv) {
+
+  int c;
+  char *ifile = "rdrand";
+  char *ofile = "stdio";
+
+  while ((c = getopt (argc, argv, "i:o:")) != -1) {
+    switch (c)
+      {
+      case 'i':
+        ifile = optarg;
+        break;
+      case 'o':
+        ofile = optarg;
+        break;
+      case '?':
+        fprintf(stderr, "%s: usage: %s NBYTES\n", argv[0], argv[0]);
+        return 1;
+      default:
+        abort ();
+      }
+  }
+
   int nbytes = handle_nbytes(argc, argv);
 
-  if (nbytes == 1){
-        fprintf(stderr, "%s: usage: %s NBYTES\n", argv[0], argv[0]);
+  if (nbytes == -1){
     return 1;
-  } else if (nbytes == 0) {
+  } else if (nbytes == -2) {
     return 0;
   }
 
-  return handle_output(nbytes);
+  return handle_output(ifile, ofile, nbytes);
 }

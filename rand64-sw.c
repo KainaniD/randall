@@ -6,8 +6,8 @@
 FILE *urandstream;
 
 /* Initialize the software rand64 implementation.  */
-void software_rand64_init(void) {
-  urandstream = fopen("/dev/random", "r");
+void software_rand64_init(char* inputFile) {
+  urandstream = fopen(inputFile, "r");
   if (!urandstream)
     abort();
 }
