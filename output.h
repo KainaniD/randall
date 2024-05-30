@@ -5,6 +5,8 @@
 #include <limits.h>
 #include <stdbool.h>
 #include <string.h>
+#include <unistd.h>
+#include <stdio.h>
 #include "rand64-hw.h"
 #include "rand64-sw.h"
 #include "rand64-lrand4_r.h"

@@ -63,8 +63,29 @@ int handle_output(char *input, char *output, int nbytes) {
       }
       nbytes -= outbytes;
       } while (0 < nbytes);
+
    } else {
-      // Handle -o N option
+
+      do {
+        int N = atoi(output);
+        if (N <= 0){
+          fprintf(stderr, "ERROR, N is not valid\n");
+          return 1;
+        }
+
+        char* buf = malloc(sizeof(char) * N);
+        if (buf == NULL){
+          fprintf(stderr, "ERROR, memory not allocated\n");
+          return 1;
+        }
+        unsigned long long x = rand64();
+        unsigned long long *ptr = &x;
+        memcpy(buf, ptr, N);
+        int written = write(1, buf, N);
+
+        free(buf); 
+        nbytes -= written;
+      } while (0 < nbytes);
    }
 
   if (fclose(stdout) != 0)

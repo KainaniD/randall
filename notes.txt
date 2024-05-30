@@ -1,3 +1,6 @@
+Kainani Dowell 
+UID: 12136930
+
 ========== Commit 1 ==========
 
 Added unit checks to the makefile
@@ -41,3 +44,17 @@ rand64-sw.c / rand64-sw.h {
 
 ========== Commit 3 ==========
 
+bash-4.4$     time ./randall 133562368 >/dev/null
+real    0m4.000s
+user    0m3.937s
+sys     0m0.021s
+
+bash-4.4$     time ./randall 133562368 | cat >/dev/null
+real    0m4.089s
+user    0m3.996s
+sys     0m0.264s
+
+bash-4.4$     time ./randall 133562368 >rand.data
+real    0m4.038s
+user    0m3.886s
+sys     0m0.126s
